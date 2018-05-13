@@ -1,17 +1,15 @@
 <ion-header>
-  <ion-navbar>
-    <ion-title>Home</ion-title>
-  </ion-navbar>
+    <ion-navbar>
+        <ion-title>广阅</ion-title>
+    </ion-navbar>
 </ion-header>
 
 <ion-content padding>
-  <h2>Welcome to Ionic!</h2>
-  <p>
-    This starter project comes with simple tabs-based layout for apps
-    that are going to primarily use a Tabbed UI.
-  </p>
-  <p>
-    Take a look at the <code>src/pages/</code> directory to add or change tabs,
-    update any existing page or create new pages.
-  </p>
+    <ion-item *ngFor="let chat of chats" (click)="getInChat(chat.chatId)">
+        <ion-thumbnail item-left class="avatar">
+            <img src="{{chat.avatar}}"/>
+        </ion-thumbnail>
+        <ion-label class="title" stacked>{{chat.title}}</ion-label>
+        <ion-label class="msg">{{chat.msg[chat.msg.length - 1].nickname}} : {{chat.msg[chat.msg.length - 1].msg}}</ion-label>
+    </ion-item>
 </ion-content>
