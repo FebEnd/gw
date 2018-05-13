@@ -6,13 +6,93 @@
 -->
 <ion-header>
 
-  <ion-navbar>
-    <ion-title>login</ion-title>
-  </ion-navbar>
+    <ion-navbar no-border-bottom>
+        <ion-title>广阅</ion-title>
+    </ion-navbar>
+
+    <ion-toolbar no-border-top>
+
+        <ion-segment [(ngModel)]="welcome">
+            <ion-segment-button value="login">
+                登陆
+            </ion-segment-button>
+            <ion-segment-button value="register">
+                注册
+            </ion-segment-button>
+        </ion-segment>
+
+    </ion-toolbar>
 
 </ion-header>
 
+<ion-content padding (swipe)="swipeEvent($event)">
+    <div [ngSwitch]="welcome">
+        <div *ngSwitchCase="'login'">
+            <form [formGroup]="loginForm" (ngSubmit)="login(loginForm.value)" novalidate>
+                <ion-item [class.error]="!lPhone.valid && lPhone.touched">
+                    <ion-label floating>
+                        <ion-icon name="person">账号</ion-icon>
+                    </ion-label>
+                    <ion-input type="text" value="" [formControl]="lPhone" clearInput="true"></ion-input>
+                </ion-item>
+                <label *ngIf="lPhone.hasError('required') && lPhone.touched" class="error-message">请输入手机号</label>
+                <label *ngIf="lPhone.hasError('pattern') && lPhone.touched" class="error-message">手机号格式错误</label>
+                <ion-item>
+                    <ion-label floating>
+                        <ion-icon name="lock">密码</ion-icon>
+                    </ion-label>
+                    <ion-input type="password" value="" [formControl]="lPassword" clearInput="true"></ion-input>
+                </ion-item>
+                <label *ngIf="lPassword.hasError('required') && lPassword.touched" class="error-message">密码不可以为空</label>
+                <button ion-button block type="submit" [disabled]="!loginForm.valid">登陆</button>
+                <button ion-button block type="button" (click)="swipeTo(1)">尚无账号，前往注册</button>
+            </form>
+        </div>
 
-<ion-content padding>
+        <div *ngSwitchCase="'register'">
+            <form [formGroup]="registerForm" (ngSubmit)="register(registerForm.value)" novalidate>
+                <!-- input nickname -->
+                <ion-item>
+                    <ion-label floating>昵称</ion-label>
+                    <ion-input type="text" value="" [formControl]="nickname" clearInput="true"></ion-input>
+                    <ion-thumbnail item-right (click)="chooseAvatar()">
+                        <img [src]="avatarPath" alt="选择头像" />
+                    </ion-thumbnail>
+                </ion-item>
+                <span *ngIf="nickname.hasError('required') && nickname.touched" class="error-message">昵称不可以为空</span>
+                <!-- input phone number -->
+                <ion-item [class.error]="!phone.valid && phone.touched">
+                    <ion-label floating>手机号</ion-label>
+                    <ion-input type="text" value="" [formControl]="phone" clearInput="true"></ion-input>
+                </ion-item>
+                <span *ngIf="phone.hasError('required') && phone.touched" class="error-message">手机号不可以为空</span>
+                <span *ngIf="phone.hasError('pattern') && phone.touched" class="error-message">手机号格式错误</span>
+                <!-- input password -->
+                <ion-item>
+                    <ion-label floating>密码</ion-label>
+                    <ion-input type="password" value="" [formControl]="password" clearInput="true"></ion-input>
+                </ion-item>
+                <span *ngIf="password.hasError('required') && password.touched" class="error-message">密码不可以为空</span>
+                <span *ngIf="password.hasError('minlength') && password.touched" class="error-message">密码长度最少为六位</span>
+                <!-- repeat password -->
+                <ion-item>
+                    <ion-label floating>重复密码</ion-label>
+                    <ion-input type="password" value="" [formControl]="repeat" clearInput="true"></ion-input>
+                </ion-item>
+                <label *ngIf="repeat.hasError('required') && repeat.touched" class="error-message">请重复密码</label>
+                <label *ngIf="repeat.value!=password.value && repeat.touched" class="error-message">两次密码不一致</label>
+                <!-- get verify code -->
+                <ion-item>
+                    <ion-label floating>验证码</ion-label>
+                    <ion-input type="text" value="" [formControl]="verify" clearInput="true"></ion-input>
+                    <button ion-button ion-stop-event="true" item-right (click)="getVerifyCode()" [disabled]="phone.hasError('required') || phone.hasError('pattern')">获取验证码</button>
+                </ion-item>
+                <label *ngIf="verify.hasError('required') && verify.touched" class="error-message">验证码不可以为空</label>
+                <label *ngIf="verify.hasError('matched') && verify.touched" class="error-message">验证码错误</label>
+                <button ion-button block type="submit" [disabled]="!registerForm.valid">注册</button>
+                <button ion-button block type="button" (click)="swipeTo(0)">已有账号，前往登陆</button>
+            </form>
+        </div>
 
+    </div>
 </ion-content>
